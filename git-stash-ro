@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# git-stash-ro
+# Save snapshot of working tree into the stash without modifying working tree (aka read only).
+# First argument (optional) is the stash message.
+# Stolen from https://stackoverflow.com/questions/6315459/git-command-to-save-a-stash-without-modifying-working-tree
+if [ -n "$1" ]; then
+        git update-ref -m "$1" refs/stash "$(git stash create \"$1\")"
+else
+        HASH=`git stash create`
+        MESSAGE=`git log --no-walk --pretty="tformat:%-s" "$HASH"`
+        git update-ref -m "$MESSAGE" refs/stash "$HASH"
+fi
